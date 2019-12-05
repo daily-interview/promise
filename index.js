@@ -5,9 +5,9 @@ const REJECTED = 'rejected';
 
 function MyPromise(executor) {
     let _this = this; // 拷贝this指针
-    this.state = PENDING; // 初始状态
-    this.value = undefined; // 成功结果
-    this.reason = undefined; // 失败原因
+    _this.state = PENDING; // 初始状态
+    _this.value = undefined; // 成功结果
+    _this.reason = undefined; // 失败原因
 
     // 如果executor是同步代码 进行try catch获取其中的异常 如果有异常 把异常传到reject
     try {
@@ -34,7 +34,19 @@ function MyPromise(executor) {
 }
 
 Promise.MyPromise.then = function (onFulfilled, onRejected) {
-    // todo
+    let _this = this;
+    if (_this.state === FULFILLED) {
+        //判断参数类型，是函数执行之
+        if (typeof onFulfilled === 'function') {
+            onFulfilled(_this.value);
+        }
+
+    }
+    if (_this.state === REJECTED) {
+        if (typeof onRejected === 'function') {
+            onRejected(_this.reason);
+        }
+    }
 };
 
 module.exports = MyPromise;

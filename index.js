@@ -33,7 +33,7 @@ function MyPromise(executor) {
     }
 }
 
-Promise.MyPromise.then = function (onFulfilled, onRejected) {
+MyPromise.prototype.then = function (onFulfilled, onRejected) {
     let _this = this;
     if (_this.state === FULFILLED) {
         //判断参数类型，是函数执行之

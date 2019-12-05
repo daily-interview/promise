@@ -8,6 +8,8 @@ function MyPromise(executor) {
     _this.state = PENDING; // 初始状态
     _this.value = undefined; // 成功结果
     _this.reason = undefined; // 失败原因
+    _this.onFilFulledCallbacks = [];
+    _this.onRejectedCallbacks = [];
 
     // 如果executor是同步代码 进行try catch获取其中的异常 如果有异常 把异常传到reject
     try {
@@ -21,6 +23,9 @@ function MyPromise(executor) {
          if (_this.state === PENDING) {
             _this.value = value; // 保存成功结果
             _this.state = FULFILLED;
+            _this.onFilFulledCallbacks.forEach((fn) => {
+                fn();
+            });
         }
     }
 
@@ -29,6 +34,9 @@ function MyPromise(executor) {
         if (_this.state === PENDING) {
             _this.reason = reason; // 保存失败原因
             _this.state = REJECTED;
+            _this.onRejectedCallbacks.forEach((fn) => {
+                fn();
+            });
         }
     }
 }
@@ -46,6 +54,15 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
         if (typeof onRejected === 'function') {
             onRejected(_this.reason);
         }
+    }
+    // 当调用then时可能没成功 也没失败
+    if(_this.status === PENDING) { // 此时没有resolve也没有reject
+        _this.onResolvedCallbacks.push(function(){ // 用数组是为了保证在异步时有多次promise.then的情况 
+            onFulfiled(_this.value);
+        });
+        _this.onRejectedCallbacks.push(function(){
+            onRejected(_this.reason);
+        });
     }
 };
 

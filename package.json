@@ -1,0 +1,14 @@
+{
+  "name": "promise",
+  "version": "0.0.1",
+  "description": "write a function of promise step by step",
+  "main": "index.js",
+  "scripts": {
+    "test": "promises-aplus-tests index.js"
+  },
+  "author": "artdong",
+  "license": "MIT",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}

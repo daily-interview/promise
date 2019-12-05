@@ -1,0 +1,11 @@
+# files
+.git
+*.log
+*.zip
+yarn.lock
+package-lock.json
+
+# folders
+node_modules/
+.idea/
+.vscode/

@@ -15,7 +15,7 @@ function MyPromise(executor) {
     try {
         executor(resolve, reject);  // 立即执行 
     } catch (e) {  
-        reject(e);  //调用reject并把捕获的error作为参数传给reject
+        reject(e);  // 调用reject并把捕获的error作为参数传给reject
     }
 
     function resolve(value) {
@@ -43,28 +43,22 @@ function MyPromise(executor) {
 
 MyPromise.prototype.then = function (onFulfilled, onRejected) {
     let _this = this;
-    if (_this.state === FULFILLED) {
-        //判断参数类型，是函数执行之
-        if (typeof onFulfilled === 'function') {
-            onFulfilled(_this.value);
-        }
-
-    }
-    if (_this.state === REJECTED) {
-        if (typeof onRejected === 'function') {
-            onRejected(_this.reason);
-        }
-    }
-    // 当调用then时可能没成功 也没失败
-    if(_this.status === PENDING) { // 此时没有resolve也没有reject
-        _this.onResolvedCallbacks.push(function(){ // 用数组是为了保证在异步时有多次promise.then的情况 
-            onFulfiled(_this.value);
-        });
-        _this.onRejectedCallbacks.push(function(){
-            onRejected(_this.reason);
-        });
-    }
+    let promise2 = new Promise((resolve, reject) => {
+        // todo
+    });
+    return promise2;
 };
+
+/**
+ * 解析then返回值与新Promise对象
+ * @param {Object} promise2 新的Promise对象 
+ * @param {*} x 上一个then的返回值
+ * @param {Function} resolve promise2的resolve
+ * @param {Function} reject promise2的reject
+ */
+function resolvePromise(promise2, x, resolve, reject) {
+    // todo
+}
 
 MyPromise.deferred = function() {
     let dfd = {};

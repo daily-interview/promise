@@ -9,7 +9,12 @@ function MyPromise(executor) {
     this.value = undefined; // 成功结果
     this.reason = undefined; // 失败原因
 
-    executor(resolve, reject); // 立即执行
+    // 如果executor是同步代码 进行try catch获取其中的异常 如果有异常 把异常传到reject
+    try {
+        executor(resolve, reject);  // 立即执行 
+    } catch (e) {  
+        reject(e);  //调用reject并把捕获的error作为参数传给reject
+    }
 
     function resolve(value) {
          // 当状态为pending时再做更新

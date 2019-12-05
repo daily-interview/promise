@@ -8,6 +8,8 @@ function MyPromise(executor) {
     this.value = undefined; // 成功结果
     this.reason = undefined; // 失败原因
 
+    executor(resolve, reject); // 立即执行
+
     function resolve(value) {
         // todo
     }

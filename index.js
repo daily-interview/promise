@@ -109,23 +109,34 @@ function resolvePromise(promise2, x, resolve, reject) {
     if(promise2 == x) {
         return reject(new TypeError('循环引用了!'));
     }
-    if(x !== null && (typeof x === 'object' || typeof x === 'function')) {
-        try{
+    // 看x是不是一个promise promise应该是一个对象
+    let called;  // 表示是否调用过成功或者失败
+    if (x!== null && (typeof x ==='object' ||typeof x === 'function')) {
+        // 可能是promise 看这个对象中是否有then 如果有 姑且作为promise 用try catch防止报错
+        try {
             let then = x.then;
-            if(typeof then === 'function') {
-                then.call(x, (y) => {
-                    resolvePromise(promise2,y,resolve,reject);
-                },(r)=>{
-                    reject(r);
-                });
-            }else{
-                resolve(x);
+            if (typeof then === 'function') {
+                // 成功
+                then.call(x, function(y) {
+                    if (called) return; // 避免别人写的promise中既走resolve又走reject的情况
+                    called = true;
+                    resolvePromise(promise2, y, resolve, reject)
+                }, function(err) {
+                    if (called) return
+                    called = true;
+                    reject(err);
+                })
+            } else {
+                resolve(x); // 如果then不是函数 则把x作为返回值.
             }
-        }catch(e){
+        } catch (e) {
+            if (called) return
+            called = true;
             reject(e);
-        };
-    }else{
-        resolve(x);
+        }
+        
+    } else {  // 普通值
+        return resolve(x);
     }
 }
 

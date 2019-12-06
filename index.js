@@ -51,8 +51,25 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
     onRejected = typeof onRejected === 'function'? onRejected:function(err) {
         throw err;
     }
-    let promise2 = new Promise((resolve, reject) => {
-        // todo
+    let promise2 = new MyPromise((resolve,reject) => {
+        if(_this.state === FULFILLED){
+            let x = onFilfulled(_this.value);
+            resolvePromise(promise2,x,resolve,reject);
+        }
+        if(_this.state === REJECTED) {
+            let x = onRejected(_this.reason);
+            resolvePromise(promise2,x,resolve,reject);
+        }
+        if(_this.state === PENDING) {
+            _this.onFilFulledCallbacks.push(function() {
+                let x = onFilfulled(_this.value);
+                resolvePromise(promise2,x,resolve,reject);
+            });
+            _this.onRejectedCallbacks.push(function(){
+                let x = onRejected(_this.reason);
+                resolvePromise(promise2,x,resolve,reject);
+           });
+        }
     });
     return promise2;
 };

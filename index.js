@@ -57,7 +57,27 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
  * @param {Function} reject promise2的reject
  */
 function resolvePromise(promise2, x, resolve, reject) {
-    // todo
+    if(promise2 == x) {
+        return reject(new TypeError('循环引用了!'));
+    }
+    if(x !== null && (typeof x === 'object' || typeof x === 'function')) {
+        try{
+            let then = x.then;
+            if(typeof then === 'function') {
+                then.call(x, (y) => {
+                    resolvePromise(promise2,y,resolve,reject);
+                },(r)=>{
+                    reject(r);
+                });
+            }else{
+                resolve(x);
+            }
+        }catch(e){
+            reject(e);
+        };
+    }else{
+        resolve(x);
+    }
 }
 
 MyPromise.deferred = function() {

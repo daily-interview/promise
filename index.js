@@ -8,7 +8,7 @@ function MyPromise(executor) {
     _this.state = PENDING; // 初始状态
     _this.value = undefined; // 成功结果
     _this.reason = undefined; // 失败原因
-    _this.onFilFulledCallbacks = [];
+    _this.onFulFilledCallbacks = [];
     _this.onRejectedCallbacks = [];
 
     // 如果executor是同步代码 进行try catch获取其中的异常 如果有异常 把异常传到reject
@@ -23,7 +23,7 @@ function MyPromise(executor) {
          if (_this.state === PENDING) {
             _this.value = value; // 保存成功结果
             _this.state = FULFILLED;
-            _this.onFilFulledCallbacks.forEach((fn) => {
+            _this.onFulFilledCallbacks.forEach((fn) => {
                 fn();
             });
         }
@@ -44,7 +44,7 @@ function MyPromise(executor) {
 MyPromise.prototype.then = function (onFulfilled, onRejected) {
     let _this = this;
     // 成功和失败默认不传, 给一个默认函数 可以实现值的穿透
-    onFulfiled = typeof onFulfiled === 'function'? onFulfiled:function(value) {
+    onFulfilled = typeof onFulfilled === 'function'? onFulfilled:function(value) {
         return value;
     }
     // 在值的穿透的情况下 应该走下一个then的onRejected而不是onFulfiled 保证逻辑的一致性

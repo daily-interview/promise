@@ -53,21 +53,45 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
     }
     let promise2 = new MyPromise((resolve,reject) => {
         if(_this.state === FULFILLED){
-            let x = onFilfulled(_this.value);
-            resolvePromise(promise2,x,resolve,reject);
+            setTimeout(() => { // 用setTimeOut实现异步
+                try{
+                    let x = onFulfilled(_this.value); // x可能是普通值 也可能是一个promise, 还可能是别人的promise
+                    resolvePromise(promise2,x,resolve,reject); // 写一个方法统一处理
+                }catch(e){
+                    reject(e);
+                }
+            },0);
         }
         if(_this.state === REJECTED) {
-            let x = onRejected(_this.reason);
-            resolvePromise(promise2,x,resolve,reject);
+            setTimeout(() => {
+                try{
+                    let x = onRejected(_this.reason);
+                    resolvePromise(promise2,x,resolve,reject);
+                }catch(e){
+                    reject(e);
+                }
+            },0);
         }
         if(_this.state === PENDING) {
-            _this.onFilFulledCallbacks.push(function() {
-                let x = onFilfulled(_this.value);
-                resolvePromise(promise2,x,resolve,reject);
+            _this.onFulFilledCallbacks.push(function() {
+                setTimeout(() => {
+                    try{
+                        let x = onFulfilled(_this.value);
+                        resolvePromise(promise2,x,resolve,reject);
+                    }catch(e){
+                        reject(e);
+                    }
+                },0);
             });
             _this.onRejectedCallbacks.push(function(){
-                let x = onRejected(_this.reason);
-                resolvePromise(promise2,x,resolve,reject);
+                setTimeout(() => {
+                   try{
+                       let x = onRejected(_this.reason);
+                       resolvePromise(promise2,x,resolve,reject);
+                   }catch(e){
+                       reject(e);
+                   }
+               },0);
            });
         }
     });

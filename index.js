@@ -43,6 +43,14 @@ function MyPromise(executor) {
 
 MyPromise.prototype.then = function (onFulfilled, onRejected) {
     let _this = this;
+    // 成功和失败默认不传, 给一个默认函数 可以实现值的穿透
+    onFulfiled = typeof onFulfiled === 'function'? onFulfiled:function(value) {
+        return value;
+    }
+    // 在值的穿透的情况下 应该走下一个then的onRejected而不是onFulfiled 保证逻辑的一致性
+    onRejected = typeof onRejected === 'function'? onRejected:function(err) {
+        throw err;
+    }
     let promise2 = new Promise((resolve, reject) => {
         // todo
     });

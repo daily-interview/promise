@@ -190,6 +190,18 @@ MyPromise.race = function(values) {
     });
 }
 
+MyPromise.resolve = function(value) {
+    return new MyPromise((resolve,reject) => {
+        resolve(value);
+    });
+}
+
+MyPromise.reject = function(reason) {
+    return new MyPromise((resolve,reject) => {
+        reject(reason);
+    });
+}
+
 MyPromise.deferred = function() {
     let dfd = {};
     dfd.promise = new MyPromise((resolve, reject) => {

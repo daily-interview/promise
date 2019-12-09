@@ -153,6 +153,30 @@ MyPromise.prototype.finally = function(fn) {
     return this;
 }
 
+MyPromise.all = function(values) {
+    return new MyPromise((resolve,reject) => {
+        let results = [];
+        let index = 0;
+        function addToArr(key,value) {
+            index++;
+            results[key] = value;
+            if(index === values.length) {
+                resolve(results);
+            }
+        }
+        for(let i = 0; i < values.length; i++) {
+            let current = values[i];
+            if(current && current.then && typeof current.then === 'function') {
+                current.then((value) => {
+                    addToArr(i,value);
+                },reject);
+            }else{
+                addToArr(i,current);
+            }
+        }
+    });
+}
+
 MyPromise.deferred = function() {
     let dfd = {};
     dfd.promise = new MyPromise((resolve, reject) => {

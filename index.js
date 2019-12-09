@@ -140,6 +140,19 @@ function resolvePromise(promise2, x, resolve, reject) {
     }
 }
 
+MyPromise.prototype.catch = function(errFn) {
+    return this.then(null,errFn);
+}
+
+MyPromise.prototype.finally = function(fn) {
+    this.then(()=>{
+        fn();
+    },()=>{
+        fn();
+    });
+    return this;
+}
+
 MyPromise.deferred = function() {
     let dfd = {};
     dfd.promise = new MyPromise((resolve, reject) => {

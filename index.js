@@ -177,6 +177,19 @@ MyPromise.all = function(values) {
     });
 }
 
+MyPromise.race = function(values) {
+    return new MyPromise((resolve,reject) => {
+        for(let i = 0; i < values.length; i++) {
+            let current = values[i];
+            if(current && current.then && typeof current.then === 'function') {
+                current.then(resolve,reject);
+            }else{
+                resolve(current);
+            }
+        }
+    });
+}
+
 MyPromise.deferred = function() {
     let dfd = {};
     dfd.promise = new MyPromise((resolve, reject) => {
